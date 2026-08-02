@@ -4,6 +4,7 @@ from .models import Project
 from .serializers import ProjectSerializer
 from core.permissions.project_permissions import IsProjectOwner
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 class ProjectViewSet(viewsets.ModelViewSet):
     """
@@ -13,11 +14,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [IsProjectOwner]
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+    ]
 
     filterset_fields = [
         "name",
         "created_at",
+    ]
+    
+    search_fields = [
+        "name",
+        "description",
     ]
 
     def get_queryset(self):
