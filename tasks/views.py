@@ -9,5 +9,11 @@ class TaskViewSet(viewsets.ModelViewSet):
     API CRUD des tâches.
     """
 
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        """
+        Retourne uniquement les tâches
+        des projets appartenant à l'utilisateur connecté.
+        """
+        return Task.objects.filter(project__owner=self.request.user)
