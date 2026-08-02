@@ -9,5 +9,18 @@ class ProjectViewSet(viewsets.ModelViewSet):
     API CRUD des projets.
     """
 
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        """
+        Retourne uniquement les projets appartenant
+        à l'utilisateur connecté.
+        """
+        return Project.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        """
+        Définit automatiquement le propriétaire
+        lors de la création d'un projet.
+        """
+        serializer.save(owner=self.request.user)
