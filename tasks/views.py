@@ -11,10 +11,15 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     serializer_class = TaskSerializer
     permission_classes = [IsTaskProjectOwner]
-    
+
     def get_queryset(self):
         """
-        Retourne uniquement les tâches
-        des projets appartenant à l'utilisateur connecté.
+        Retourne uniquement les tâches des projets
+        appartenant à l'utilisateur connecté en
+        optimisant les relations avec la base.
         """
-        return Task.objects.filter(project__owner=self.request.user)
+        return (
+            Task.objects
+            .filter(project__owner=self.request.user)
+            .select_related("project")
+        )
