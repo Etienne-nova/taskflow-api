@@ -32,10 +32,16 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Retourne uniquement les projets appartenant
-        à l'utilisateur connecté.
+        à l'utilisateur connecté en optimisant
+        les relations avec la base de données.
         """
-        return Project.objects.filter(owner=self.request.user)
-
+        return (
+            Project.objects
+            .filter(owner=self.request.user)
+            .select_related("owner")
+            .prefetch_related("members")
+        )
+    
     def perform_create(self, serializer):
         """
         Définit automatiquement le propriétaire
