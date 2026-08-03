@@ -151,3 +151,33 @@ class ProjectAPITest(APITestCase):
                 name="Projet interdit"
             ).exists()
         )
+
+    def test_owner_can_retrieve_project(self):
+        """
+        Vérifie que le propriétaire peut consulter
+        le détail de son projet.
+        """
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        response = self.client.get(
+            f"/api/projects/{self.project.id}/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.assertEqual(
+            response.data["id"],
+            self.project.id,
+        )
+
+        self.assertEqual(
+            response.data["name"],
+            self.project.name,
+        )
