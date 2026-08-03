@@ -313,3 +313,40 @@ class ProjectAPITest(APITestCase):
                 id=self.project.id
             ).exists()
         )
+
+    def test_user_cannot_delete_other_user_project(self):
+        """
+        Vérifie qu'un utilisateur ne peut pas supprimer
+        le projet d'un autre utilisateur.
+        """
+        other_user = User.objects.create_user(
+            username="other_user",
+            password="password123",
+        )
+
+        other_project = Project.objects.create(
+            name="Projet privé",
+            description="Ne doit pas être supprimé",
+            owner=other_user,
+        )
+
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        response = self.client.delete(
+            f"/api/projects/{other_project.id}/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+
+        self.assertTrue(
+            Project.objects.filter(
+                id=other_project.id
+            ).exists()
+        )
