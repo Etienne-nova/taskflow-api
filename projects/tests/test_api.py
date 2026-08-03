@@ -41,3 +41,15 @@ class ProjectAPITest(APITestCase):
         response = self.client.get("/api/projects/")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_unauthenticated_user_cannot_list_projects(self):
+        """
+        Vérifie qu'un utilisateur non authentifié
+        ne peut pas consulter la liste des projets.
+        """
+        response = self.client.get("/api/projects/")
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
+        )

@@ -6,13 +6,15 @@ from core.permissions.project_permissions import IsProjectOwner
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 
+from rest_framework.permissions import IsAuthenticated
+
 class ProjectViewSet(viewsets.ModelViewSet):
     """
     API CRUD des projets.
     """
 
     serializer_class = ProjectSerializer
-    permission_classes = [IsProjectOwner]
+    permission_classes = [IsProjectOwner, IsAuthenticated]
 
     filter_backends = [
         DjangoFilterBackend,

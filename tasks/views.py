@@ -4,13 +4,15 @@ from .models import Task
 from .serializers import TaskSerializer
 from core.permissions.task_permissions import IsTaskProjectOwner
 
+from rest_framework.permissions import IsAuthenticated
+
 class TaskViewSet(viewsets.ModelViewSet):
     """
     API CRUD des tâches.
     """
 
     serializer_class = TaskSerializer
-    permission_classes = [IsTaskProjectOwner]
+    permission_classes = [IsTaskProjectOwner, IsAuthenticated]
 
     def get_queryset(self):
         """
