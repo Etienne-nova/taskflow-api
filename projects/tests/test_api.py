@@ -212,3 +212,36 @@ class ProjectAPITest(APITestCase):
             response.status_code,
             status.HTTP_404_NOT_FOUND,
         )
+
+    def test_owner_can_update_project(self):
+        """
+        Vérifie que le propriétaire peut modifier
+        son projet.
+        """
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        data = {
+            "name": "Projet renommé",
+        }
+
+        response = self.client.patch(
+            f"/api/projects/{self.project.id}/",
+            data,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        self.project.refresh_from_db()
+
+        self.assertEqual(
+            self.project.name,
+            "Projet renommé",
+        )
