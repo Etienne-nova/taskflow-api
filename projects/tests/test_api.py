@@ -245,3 +245,45 @@ class ProjectAPITest(APITestCase):
             self.project.name,
             "Projet renommé",
         )
+
+    def test_user_cannot_update_other_user_project(self):
+        """
+        Vérifie qu'un utilisateur ne peut pas modifier
+        le projet d'un autre utilisateur.
+        """
+        other_user = User.objects.create_user(
+            username="other_user",
+            password="password123",
+        )
+
+        other_project = Project.objects.create(
+            name="Projet privé",
+            description="Invisible",
+            owner=other_user,
+        )
+
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        response = self.client.patch(
+            f"/api/projects/{other_project.id}/",
+            {
+                "name": "Tentative de modification",
+            },
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+
+        other_project.refresh_from_db()
+
+        self.assertEqual(
+            other_project.name,
+            "Projet privé",
+        )
