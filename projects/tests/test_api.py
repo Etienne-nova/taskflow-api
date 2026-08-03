@@ -85,3 +85,44 @@ class ProjectAPITest(APITestCase):
             response.data["results"][0]["name"],
             "Projet API",
         )
+
+    def test_authenticated_user_can_create_project(self):
+        """
+        Vérifie qu'un utilisateur authentifié
+        peut créer un projet.
+        """
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        data = {
+            "name": "Nouveau projet",
+            "description": "Projet créé par test",
+        }
+
+        response = self.client.post(
+            "/api/projects/",
+            data,
+            format="json",
+        )
+        print(response.status_code)
+        print(response.data)
+        
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+        )
+
+        self.assertEqual(
+            Project.objects.filter(owner=self.user).count(),
+            2,
+        )
+
+        self.assertTrue(
+            Project.objects.filter(
+                owner=self.user,
+                name="Nouveau projet",
+            ).exists()
+        )
