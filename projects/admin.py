@@ -12,10 +12,6 @@ class ProjectAdmin(admin.ModelAdmin):
         "created_at",
     )
 
-    search_fields = (
-        "name",
-    )
+    search_fields = ("name",)
 
-    list_filter = (
-        "created_at",
-    )
+    list_filter = ("created_at",)

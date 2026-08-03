@@ -19,6 +19,4 @@ class TaskAdmin(admin.ModelAdmin):
         "project",
     )
 
-    search_fields = (
-        "title",
-    )
+    search_fields = ("title",)

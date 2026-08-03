@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
+from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from projects.models import Project
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
+
 User = get_user_model()
 
 
@@ -34,9 +35,7 @@ class ProjectAPITest(APITestCase):
         """
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
         response = self.client.get("/api/projects/")
 
@@ -72,9 +71,7 @@ class ProjectAPITest(APITestCase):
 
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
         response = self.client.get("/api/projects/")
 
@@ -93,9 +90,7 @@ class ProjectAPITest(APITestCase):
         """
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
         data = {
             "name": "Nouveau projet",
@@ -107,7 +102,7 @@ class ProjectAPITest(APITestCase):
             data,
             format="json",
         )
-    
+
         self.assertEqual(
             response.status_code,
             status.HTTP_201_CREATED,
@@ -146,11 +141,7 @@ class ProjectAPITest(APITestCase):
             status.HTTP_401_UNAUTHORIZED,
         )
 
-        self.assertFalse(
-            Project.objects.filter(
-                name="Projet interdit"
-            ).exists()
-        )
+        self.assertFalse(Project.objects.filter(name="Projet interdit").exists())
 
     def test_owner_can_retrieve_project(self):
         """
@@ -159,13 +150,9 @@ class ProjectAPITest(APITestCase):
         """
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
-        response = self.client.get(
-            f"/api/projects/{self.project.id}/"
-        )
+        response = self.client.get(f"/api/projects/{self.project.id}/")
 
         self.assertEqual(
             response.status_code,
@@ -200,13 +187,9 @@ class ProjectAPITest(APITestCase):
 
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
-        response = self.client.get(
-            f"/api/projects/{other_project.id}/"
-        )
+        response = self.client.get(f"/api/projects/{other_project.id}/")
 
         self.assertEqual(
             response.status_code,
@@ -220,9 +203,7 @@ class ProjectAPITest(APITestCase):
         """
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
         data = {
             "name": "Projet renommé",
@@ -264,9 +245,7 @@ class ProjectAPITest(APITestCase):
 
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
         response = self.client.patch(
             f"/api/projects/{other_project.id}/",
@@ -295,24 +274,16 @@ class ProjectAPITest(APITestCase):
         """
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
-        response = self.client.delete(
-            f"/api/projects/{self.project.id}/"
-        )
+        response = self.client.delete(f"/api/projects/{self.project.id}/")
 
         self.assertEqual(
             response.status_code,
             status.HTTP_204_NO_CONTENT,
         )
 
-        self.assertFalse(
-            Project.objects.filter(
-                id=self.project.id
-            ).exists()
-        )
+        self.assertFalse(Project.objects.filter(id=self.project.id).exists())
 
     def test_user_cannot_delete_other_user_project(self):
         """
@@ -332,21 +303,13 @@ class ProjectAPITest(APITestCase):
 
         refresh = RefreshToken.for_user(self.user)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
-        response = self.client.delete(
-            f"/api/projects/{other_project.id}/"
-        )
+        response = self.client.delete(f"/api/projects/{other_project.id}/")
 
         self.assertEqual(
             response.status_code,
             status.HTTP_404_NOT_FOUND,
         )
 
-        self.assertTrue(
-            Project.objects.filter(
-                id=other_project.id
-            ).exists()
-        )
+        self.assertTrue(Project.objects.filter(id=other_project.id).exists())

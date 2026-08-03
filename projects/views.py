@@ -1,12 +1,13 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
+
+from core.permissions.project_permissions import IsProjectOwner
 
 from .models import Project
 from .serializers import ProjectSerializer
-from core.permissions.project_permissions import IsProjectOwner
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
 
-from rest_framework.permissions import IsAuthenticated
 
 class ProjectViewSet(viewsets.ModelViewSet):
     """
@@ -25,7 +26,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         "name",
         "created_at",
     ]
-    
+
     search_fields = [
         "name",
         "description",
@@ -38,12 +39,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
         les relations avec la base de données.
         """
         return (
-            Project.objects
-            .filter(owner=self.request.user)
+            Project.objects.filter(owner=self.request.user)
             .select_related("owner")
             .prefetch_related("members")
         )
-    
+
     def perform_create(self, serializer):
         """
         Définit automatiquement le propriétaire

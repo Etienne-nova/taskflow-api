@@ -1,10 +1,11 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+
+from core.permissions.task_permissions import IsTaskProjectOwner
 
 from .models import Task
 from .serializers import TaskSerializer
-from core.permissions.task_permissions import IsTaskProjectOwner
 
-from rest_framework.permissions import IsAuthenticated
 
 class TaskViewSet(viewsets.ModelViewSet):
     """
@@ -20,8 +21,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         appartenant à l'utilisateur connecté en
         optimisant les relations avec la base.
         """
-        return (
-            Task.objects
-            .filter(project__owner=self.request.user)
-            .select_related("project")
+        return Task.objects.filter(project__owner=self.request.user).select_related(
+            "project"
         )

@@ -28,7 +28,6 @@ class ProjectModelTest(TestCase):
 
         self.assertEqual(str(project), "TaskFlow API")
 
-
     def test_project_creation(self):
         """
         Vérifie qu'un projet est correctement créé.
