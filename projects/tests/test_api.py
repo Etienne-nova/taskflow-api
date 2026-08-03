@@ -53,3 +53,35 @@ class ProjectAPITest(APITestCase):
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
+
+    def test_user_only_sees_own_projects(self):
+        """
+        Vérifie qu'un utilisateur ne voit que
+        les projets dont il est propriétaire.
+        """
+        other_user = User.objects.create_user(
+            username="other_user",
+            password="password123",
+        )
+
+        Project.objects.create(
+            name="Projet secret",
+            description="Ne doit pas être visible",
+            owner=other_user,
+        )
+
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        response = self.client.get("/api/projects/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["name"],
+            "Projet API",
+        )
