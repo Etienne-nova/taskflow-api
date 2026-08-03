@@ -287,3 +287,29 @@ class ProjectAPITest(APITestCase):
             other_project.name,
             "Projet privé",
         )
+
+    def test_owner_can_delete_project(self):
+        """
+        Vérifie que le propriétaire peut supprimer
+        son projet.
+        """
+        refresh = RefreshToken.for_user(self.user)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}"
+        )
+
+        response = self.client.delete(
+            f"/api/projects/{self.project.id}/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT,
+        )
+
+        self.assertFalse(
+            Project.objects.filter(
+                id=self.project.id
+            ).exists()
+        )
