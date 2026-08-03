@@ -27,3 +27,23 @@ class ProjectModelTest(TestCase):
         )
 
         self.assertEqual(str(project), "TaskFlow API")
+
+
+    def test_project_creation(self):
+        """
+        Vérifie qu'un projet est correctement créé.
+        """
+        user = User.objects.create_user(
+            username="user2@example.com",
+            password="password123",
+        )
+
+        project = Project.objects.create(
+            name="Backend API",
+            description="Projet de démonstration",
+            owner=user,
+        )
+
+        self.assertEqual(project.name, "Backend API")
+        self.assertEqual(project.description, "Projet de démonstration")
+        self.assertEqual(project.owner, user)
