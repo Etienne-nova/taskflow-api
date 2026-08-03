@@ -107,9 +107,7 @@ class ProjectAPITest(APITestCase):
             data,
             format="json",
         )
-        print(response.status_code)
-        print(response.data)
-        
+    
         self.assertEqual(
             response.status_code,
             status.HTTP_201_CREATED,
@@ -124,5 +122,32 @@ class ProjectAPITest(APITestCase):
             Project.objects.filter(
                 owner=self.user,
                 name="Nouveau projet",
+            ).exists()
+        )
+
+    def test_unauthenticated_user_cannot_create_project(self):
+        """
+        Vérifie qu'un utilisateur non authentifié
+        ne peut pas créer un projet.
+        """
+        data = {
+            "name": "Projet interdit",
+            "description": "Ne doit pas être créé",
+        }
+
+        response = self.client.post(
+            "/api/projects/",
+            data,
+            format="json",
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
+        )
+
+        self.assertFalse(
+            Project.objects.filter(
+                name="Projet interdit"
             ).exists()
         )
