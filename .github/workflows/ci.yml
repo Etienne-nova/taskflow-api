@@ -12,6 +12,24 @@ jobs:
   quality-and-tests:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+
+        env:
+          POSTGRES_DB: taskflow_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       SECRET_KEY: django-test-secret-key
       DB_NAME: taskflow_test
@@ -20,7 +38,7 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 5432
       ALLOWED_HOSTS: localhost,127.0.0.1
-      
+
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
