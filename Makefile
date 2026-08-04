@@ -7,7 +7,7 @@ format:
 	black .
 
 test:
-	pytest
+	pytest --cov=. --cov-report=term-missing
 
 quality:
 	ruff check .

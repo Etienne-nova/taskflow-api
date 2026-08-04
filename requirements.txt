@@ -112,3 +112,4 @@ black
 pytest
 pytest-django
 ruff
+pytest-cov
