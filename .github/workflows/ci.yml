@@ -59,5 +59,8 @@ jobs:
       - name: Vérifier Black
         run: black --check .
 
+      - name: Appliquer les migrations
+        run: python manage.py migrate --noinput
+
       - name: Exécuter les tests
         run: make test
