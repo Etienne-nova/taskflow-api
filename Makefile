@@ -7,7 +7,7 @@ format:
 	black .
 
 test:
-	python manage.py test
+	pytest
 
 quality:
 	ruff check .
