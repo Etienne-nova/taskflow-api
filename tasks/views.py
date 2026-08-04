@@ -13,7 +13,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = TaskSerializer
-    permission_classes = [IsTaskProjectOwner, IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsTaskProjectOwner]
 
     def get_queryset(self):
         """
