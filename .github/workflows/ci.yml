@@ -12,6 +12,14 @@ jobs:
   quality-and-tests:
     runs-on: ubuntu-latest
 
+    env:
+      SECRET_KEY: django-test-secret-key
+      DB_NAME: taskflow_test
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
