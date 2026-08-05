@@ -113,3 +113,4 @@ pytest
 pytest-django
 ruff
 pytest-cov
+pre-commit
