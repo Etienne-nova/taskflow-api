@@ -7,7 +7,11 @@ format:
 	black .
 
 test:
-	pytest --cov=. --cov-report=term-missing --cov-report=html
+	pytest\
+		--cov=. \
+		--cov-report=term-missing \
+		--cov-report=html \
+		--cov-report=xml
 
 quality:
 	ruff check .
