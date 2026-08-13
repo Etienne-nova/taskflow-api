@@ -2,4 +2,8 @@
 __pycache__/
 *.pyc
 coverage.xml
-.env
+*.sqlite3
+audit-dump.txt
+.venv-clean/
+.venv-prod/
+.coverage

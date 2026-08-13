@@ -55,6 +55,24 @@ INSTALLED_APPS = [
     "tasks",
 ]
 
+REDIS_URL = env(
+    "REDIS_URL",
+    default="redis://127.0.0.1:6379/1",
+)
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "taskflow",
+    }
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
