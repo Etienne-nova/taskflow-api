@@ -1,0 +1,16 @@
+.git
+.github
+.venv-clean
+.venv-prod
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.coverage
+coverage.xml
+htmlcov
+.env
+.env.*
+requirements-dev.txt
+audit-avant-projet1.txt
+full-test-output.txt

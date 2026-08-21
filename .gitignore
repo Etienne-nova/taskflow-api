@@ -7,3 +7,4 @@ audit-dump.txt
 .venv-clean/
 .venv-prod/
 .coverage
+staticfiles/
